@@ -14,6 +14,8 @@ const ContactList = () => {
   const normalizedFilter = filterValue.filter.toLowerCase();
   const visibleContacts = contactsFromState? contactsFromState.filter(contact => contact.name.toLowerCase().includes(normalizedFilter)) : null;
 
+  // console.log(contactsFromState)
+
   useEffect(() => {
     dispatch(fetchContacts());
   }, [dispatch]);
