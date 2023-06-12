@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {fetchContacts} from 'redux/operations'
+import {fetchContacts, addContact, deleteContact} from 'redux/operations'
 
 export const initialContacts = 
   {
@@ -11,14 +11,7 @@ export const initialContacts =
 const contactsSlice = createSlice({
     name: 'contacts',
     initialState: initialContacts,
-    reducers: {
-      addContact: (state, action) => {
-        state.items = [...state.items, action.payload]
-    },
-      deleteContactAct: (state, action) => {
-      state.items = state.items.filter(el => el.id !== action.payload)
-  },
-},
+    
 extraReducers: {
   [fetchContacts.pending](state) {
     state.isLoading = true;
@@ -34,8 +27,38 @@ extraReducers: {
 
 		state.items = initialContacts.items;
   },
+
+  [addContact.pending](state) {
+    state.isLoading = true;
+  },
+  [addContact.fulfilled](state, action) {
+    state.isLoading = false;
+    state.error = null;
+    state.items = [...state.items, action.payload]
+  },
+  [addContact.rejected](state, action) {
+    state.isLoading = false;
+    state.error = action.payload;
+
+		state.items = initialContacts.items;
+  },
+
+  [deleteContact.pending](state) {
+    state.isLoading = true;
+  },
+  [deleteContact.fulfilled](state, action) {
+    state.isLoading = false;
+    state.error = null;
+    state.items = state.items.filter(el => el.id !== action.payload.id)
+  },
+  [deleteContact.rejected](state, action) {
+    state.isLoading = false;
+    state.error = action.payload;
+
+		state.items = initialContacts.items;
+  },
 },
 });
 
 export const contactsReducer = contactsSlice.reducer;
-export const { addContact, deleteContactAct } = contactsSlice.actions;
+

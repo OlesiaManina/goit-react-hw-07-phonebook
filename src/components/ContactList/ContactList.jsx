@@ -1,9 +1,8 @@
 import { useSelector, useDispatch } from 'react-redux';
 import css from './ContactList.module.css';
-import { deleteContactAct } from "redux/contactsSlice";
 import {getContacts, getFilterValue, getError, getLoading} from 'redux/selectors'
 import { useEffect } from 'react';
-import { fetchContacts } from 'redux/operations';
+import { fetchContacts, deleteContact } from 'redux/operations';
 
 const ContactList = () => {
   const contactsFromState = useSelector(getContacts);
@@ -14,27 +13,25 @@ const ContactList = () => {
   const normalizedFilter = filterValue.filter.toLowerCase();
   const visibleContacts = contactsFromState? contactsFromState.filter(contact => contact.name.toLowerCase().includes(normalizedFilter)) : null;
 
-  // console.log(contactsFromState)
-
   useEffect(() => {
     dispatch(fetchContacts());
   }, [dispatch]);
   
-  const deleteContact = contactId => {
-    dispatch(deleteContactAct(contactId))
+  const removeContact = contactId => {
+    dispatch(deleteContact(contactId))
   }
 
 return (
   <ul className={css.list}>
     {error && <p>{error}</p>}
     {loading && <p>Loading....</p>}
-    {visibleContacts && visibleContacts.map(({name, number, id}) => {
+    {visibleContacts && visibleContacts.map(({name, phone, id}) => {
       return (
         <li key={id} className={css.listItem}>
           <p className={css.text}>
-          {name}: {number}
+          {name}: {phone}
           </p>
-          <button onClick={() => deleteContact(id)} className={css.btn}>Delete</button>
+          <button onClick={() => removeContact(id)} className={css.btn}>Delete</button>
         </li>
       )
     } )}
